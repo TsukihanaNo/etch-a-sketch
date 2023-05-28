@@ -7,8 +7,15 @@
     <body>
         <h1>Etch-A-Sketch</h1>
         <div class="container">
+            <div class="grid">
+
+            </div>
         </div>
-        <button class="clear">Clear</button>
+        <div class="buttons-container">
+            <button class="clear">Clear</button>
+            <button onclick="changeGrid()" class="new-grid">Grid Size</button>
+        </div>
+        
         <style>
 
             * {
@@ -28,21 +35,30 @@
             .container {
                 display: flex;
                 flex-direction: row;
-                height: 500px;
-                width: 500px;
                 justify-content: center;
                 flex-wrap: wrap;
                 margin: 0 auto;
             }
 
-            .clear {
+            .grid {
+                display: grid;
+                height: 500px;
+                width: 500px;
+            }
+
+            .buttons-container {
+                display: flex;
+                justify-content: space-evenly;
+                margin: 0 auto;
+                width: 20%;
+            }
+
+            .clear,.new-grid {
                 width: 100px;
                 margin: 10px auto;
             }
 
             .cell {
-                height:10px;
-                width: 10px;
                 border: solid 1px black;
 
             }
@@ -52,18 +68,12 @@
             }
         </style>
         <script>
-            const container = document.querySelector(".container");
+            const DEFAULT_SIZE = 16;
+            const container = document.querySelector(".grid");
             const clearButton = document.querySelector(".clear");
             clearButton.addEventListener("click",clear)
 
-            for (let i = 0; i<50; i++){
-                for (let j = 0; j<50; j++){
-                    const cell = document.createElement("div")
-                    cell.classList.add("cell")
-                    cell.addEventListener("mouseover",addColor)
-                    container.appendChild(cell)
-                }
-            }
+            generateGrid(DEFAULT_SIZE);
 
             function addColor(e){
                 e.target.classList.add("color");
@@ -73,6 +83,36 @@
                 const cells = document.querySelectorAll(".color");
 
                 cells.forEach(cell => cell.classList.remove("color"))
+            }
+
+            function clearGrid(){
+                while(container.firstChild){
+                    container.removeChild(container.firstChild);
+                }
+            }
+
+            function generateGrid(gridSize){
+                container.style.gridTemplateColumns = `repeat(${gridSize},1fr)`;
+                container.style.gridTemplateRows = `repeat(${gridSize},1fr)`;
+
+                for (let i = 0; i<gridSize; i++){
+                    for (let j = 0; j<gridSize; j++){
+                        const cell = document.createElement("div")
+                        cell.classList.add("cell")
+                        cell.addEventListener("mouseover",addColor)
+                        container.appendChild(cell)
+                    }
+                }
+            }
+
+            function changeGrid(){
+                const newSize = parseInt(prompt("Enter a new grid size between 16 and 100:"));
+                if (newSize>=16 && newSize<=100){
+                    clearGrid();
+                    generateGrid(newSize)
+                }else{
+                    alert("size out of bound")
+                }
             }
 
         </script>
